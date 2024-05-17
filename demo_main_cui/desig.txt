@@ -1,0 +1,6 @@
+Exit = q | Choose = enter | Up = up arrow | Dow = down arrow | Left = left arrow | Right = right arrow
+
+vị trí hiển thị đường dẫn hiện tại
+
+sau             hiện tại            trước hoặc nội dung
+
