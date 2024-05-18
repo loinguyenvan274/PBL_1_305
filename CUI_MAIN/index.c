@@ -16,7 +16,7 @@
 #define SAVE_BUTTON_FLAG 4
 #define SOLVE_FLAG 5
 #define SAVE_BOTTON_EX_FLAG 6
-
+#define VIEW_FLAG 7
 #define MAX_KEY 30
 
 ////maxtrix
@@ -119,6 +119,7 @@ int main()
     fprintf(fLog, "");
     fclose(fLog);
     int flagKey = DEFAULT_FLAG;
+    int flagView = DEFAULT_FLAG;
     int maxLenNu;
     double exper[10];
     homeFace("No Find");
@@ -175,12 +176,14 @@ int main()
                 solvematrix(listNumberLine, aLineElementNumber, &genSolution, conTerms);
                 freeEnIn(enterKey, (aLineElementNumber));
                 flagKey = SAVE_BOTTON_EX_FLAG;
+                flagView = VIEW_FLAG;
                 break;
             }
             freeEnIn(enterKey, (aLineElementNumber + 1));
             break;
         case 15:
             // open Ctrl + o
+            flagView = DEFAULT_FLAG;
             if (listNumberLine != NULL)
             {
                 freeStruct(&listNumberLine);
@@ -295,6 +298,7 @@ int main()
                 solvematrix(listNumberLine, aLineElementNumber, &genSolution, conTerms);
                 freeEnIn(enterKey, (aLineElementNumber));
                 flagKey = SAVE_BOTTON_EX_FLAG;
+                flagView = VIEW_FLAG;
             }
             else if (flagKey == MIDDLE_INSESRT_FLAG)
             {
@@ -317,13 +321,14 @@ int main()
             break;
         }
         homeFace(filePath);
+        if (flagView == VIEW_FLAG)
+        {
+            printf("\033[2;0H\033[37;43m * "
+                   "\033[30;46m! check verification: Ctrl + T \033[0m");
+        }
         if (flagKey == SAVE_BOTTON_EX_FLAG)
         {
-            printf("\033[2J");
-            double conTerms[aLineElementNumber];
             homeFace(filePath);
-            ShowFaceMa(listNumberLine, aLineElementNumber, maxLenNu, enterKey, conTerms);
-            printf("\033[0m");
             if (genSolution == NULL)
             {
                 printf("\033[%d;0H !Error runtime or No solution ", aLineElementNumber + 6);
@@ -535,7 +540,8 @@ void MaWriteLog(double **matrix)
 {
     FILE *f;
     f = fopen("./OUT/solver_output.log", "a");
-    fprintf(f, "\n\n");
+    fprintf(f, "\n");
+    fprintf(f, "\n");
     int j;
     for (int i = 0; i < eNumber; i++)
     {
@@ -545,6 +551,7 @@ void MaWriteLog(double **matrix)
         }
         fprintf(f, "\n");
     }
+    fclose(f);
 }
 void EnterE(lineList *listNumberLine, double **matrix, double *conTerms)
 {
@@ -756,7 +763,7 @@ general_Solution *solve(double **matrix)
         maxValueLocation = maxArray(surplus, eNumber);
 
         x++;
-        if (x == 1000000)
+        if (x == 10000000)
         {
             // consolog
             // printf("# !Error runtime or No solution\n");

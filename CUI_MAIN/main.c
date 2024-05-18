@@ -307,7 +307,7 @@ int main()
                 flagKey = SAVE_BUTTON_FLAG;
             }
             break;
-        case 20: // Ctrl + T
+        case 22: // Ctrl + v
             verification(listNumberLine, genSolution, enterKey);
             break;
         case 24:
@@ -536,6 +536,7 @@ void MaWriteLog(double **matrix)
     FILE *f;
     f = fopen("./OUT/solver_output.log", "a");
     fprintf(f, "\n\n");
+
     int j;
     for (int i = 0; i < eNumber; i++)
     {
