@@ -11,7 +11,9 @@ int main()
 
     // Khởi tạo random seed dựa trên thời gian hiện tại
     srand(time(0));
-
+    FILE *f = fopen("./../INPUT/test_case.txt", "a");
+    if (f == NULL)
+        printf("open file test_case is fail!\n");
     // Điền ma trận với các số ngẫu nhiên từ -50 đến 50
     for (int i = 0; i < ROWS; i++)
     {
@@ -31,10 +33,12 @@ int main()
     {
         for (int j = 0; j < COLS; j++)
         {
+            fprintf(f, "%0.4g", matrix[i][j]);
             printf("%0.3g ", matrix[i][j]);
         }
+        fprintf(f, "\n");
         printf("\n");
     }
-
+    fclose(f);
     return 0;
 }

@@ -336,7 +336,7 @@ int main()
         if (flagView == VIEW_FLAG)
         {
             printf("\033[2;0H\033[37;43m * "
-                   "\033[30;46m! check verification: Ctrl + T \033[0m ");
+                   "\033[30;46m! check verification: Ctrl + T \033[0m \t                                       ");
         }
         if (flagKey == SAVE_BOTTON_EX_FLAG)
         {
