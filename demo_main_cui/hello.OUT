@@ -1,4 +1,0 @@
-D:\\ FILE *f;
-                f = fopen("hello.OUT", "w");
-                fprintf(f, "%s", cwd);
-                fclose(f);
