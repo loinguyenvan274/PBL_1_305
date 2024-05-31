@@ -17,7 +17,7 @@ int main()
     {
         for (int j = 0; j < COLS; j++)
         {
-            matrix[i][j] = ((double)(rand() % 101) - 50) / 1.7; // Giá trị ngẫu nhiên từ -50 đến 50
+            matrix[i][j] = ((double)(rand() % 101) - 50); // Giá trị ngẫu nhiên từ -50 đến 50
             if (i == j && i <= ROWS)
                 matrix[i][j] += ((double)(rand() % 101) - 50) * 2;
             else if (i + 1 == j && i > ROWS)

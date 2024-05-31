@@ -83,6 +83,7 @@ void writeToFile(lineList *head, FILE *f);
 // viết nghiệm vào file
 void genSolutionToF(general_Solution *genSolution, FILE *f);
 // graphic
+void About();
 void getPath(char path[], char FOF[]);
 void remoChPath(char str[]);
 int checkFile(char str[]);
@@ -91,7 +92,6 @@ int CpNameList(char pathName[], char **nameList);
 void boxFiledialog();
 void showHeadF();
 void showBox(int n);
-void About();
 void homeFace(char fileName[]);
 void mallString(char **str, int size_str);
 void freeString(char **str, int size_str);
@@ -121,10 +121,9 @@ int main()
     int flagKey = DEFAULT_FLAG;
     int flagView = DEFAULT_FLAG;
     int maxLenNu;
-    double exper[10];
     homeFace("No Find");
     char filePath[1024], Path[1024];
-    char **enterKey;
+    char **enterKey = NULL;
     int aLineElementNumber, count__File_Number;
     FILE *f, *fWrite;
     lineList *listNumberLine = NULL;
@@ -153,6 +152,11 @@ int main()
             }
             f = fopen(Path, "r");
             double tempNumber;
+            if (enterKey != NULL)
+            {
+                freeEnIn(enterKey, (aLineElementNumber));
+                enterKey = NULL;
+            }
             enterKey = (char **)malloc(sizeof(char *) * (aLineElementNumber));
             while ((fscanf(f, "%lf", &tempNumber) != -1) && (count != aLineElementNumber + 1))
             {
@@ -174,20 +178,23 @@ int main()
                 homeFace(filePath);
                 ShowFaceMa(listNumberLine, aLineElementNumber, maxLenNu, enterKey, conTerms);
                 solvematrix(listNumberLine, aLineElementNumber, &genSolution, conTerms);
-                freeEnIn(enterKey, (aLineElementNumber));
                 flagKey = SAVE_BOTTON_EX_FLAG;
                 flagView = VIEW_FLAG;
-                break;
             }
-            freeEnIn(enterKey, (aLineElementNumber + 1));
             break;
         case 15:
             // open Ctrl + o
             flagView = DEFAULT_FLAG;
+
             if (listNumberLine != NULL)
             {
                 freeStruct(&listNumberLine);
                 listNumberLine = NULL;
+            }
+            if (enterKey != NULL)
+            {
+                freeEnIn(enterKey, (aLineElementNumber));
+                enterKey = NULL;
             }
             getPath(filePath, "file");
             if (strcmp(filePath, "EXIT") == 0)
@@ -209,10 +216,6 @@ int main()
             printAllElement(listNumberLine, Round(aLineElementNumber) + 1, SHOW_DEFAULT, maxLenNu);
             aLineElementNumber++;
             flagKey = MIDDLE_INSESRT_FLAG;
-            printf("\033[4;0H"
-                   "\033[37;43m * \033[34;41m  Insert via file  = I \033[0m."
-                   "\t\t\t\t\t \033[37;43m * \033[34;41m  Insert using keyboard  = K \033[0m.");
-            // printf("\033[8;0H");
             break;
         case 19:
             // Save when Ctr + S
@@ -272,9 +275,6 @@ int main()
                 break;
             // in ra ma trận mà bắc người dùng chọn nhập từ bàn phím hay từ file
             printAllElement(listNumberLine, -1, SHOW_MATRIX, maxLenNu);
-            printf("\033[4;0H"
-                   "\033[37;43m * \033[34;41m  Insert via file  = I \033[0m."
-                   "\t\t\t\t\t \033[37;43m * \033[34;41m  Insert using keyboard  = K \033[0m.");
             flagKey = LAST_INSERT_FLAG;
             break;
         case 107: // K
@@ -282,6 +282,11 @@ int main()
             if (flagKey == DEFAULT_FLAG || flagKey == SAVE_BUTTON_FLAG)
                 break;
             printf("\033[4;0H\033[0m                               \t\t\t\t\t                                  ");
+            if (enterKey != NULL)
+            {
+                freeEnIn(enterKey, (aLineElementNumber));
+                enterKey = NULL;
+            }
             if (flagKey == LAST_INSERT_FLAG)
             {
                 double conTerms[aLineElementNumber];
@@ -296,15 +301,12 @@ int main()
                     printf("\033[%d;%dH\033[30;46m %g", i + 5, aLineElementNumber * (maxLenNu + 10) + 4, conTerms[i]);
                 }
                 solvematrix(listNumberLine, aLineElementNumber, &genSolution, conTerms);
-                freeEnIn(enterKey, (aLineElementNumber));
                 flagKey = SAVE_BOTTON_EX_FLAG;
                 flagView = VIEW_FLAG;
             }
             else if (flagKey == MIDDLE_INSESRT_FLAG)
             {
-
                 enterKey = showEnterKey(aLineElementNumber, aLineElementNumber / 2, maxLenNu);
-                freeEnIn(enterKey, (aLineElementNumber));
                 insertAllLine(&listNumberLine, aLineElementNumber / 2 + 1, enterKey);
                 maxLenNu = numberLenMax(listNumberLine);
                 printAllElement(listNumberLine, -1, SHOW_DEFAULT, maxLenNu);
@@ -314,24 +316,34 @@ int main()
         case 20: // Ctrl + T
             verification(listNumberLine, genSolution, enterKey);
             break;
-        case 24:
+        case 118: // V
+            system("start cmd /k view_p.exe ");
+            break;
+        case 60: // open cmd windows of about
+            system("start cmd.exe /k about.exe");
+            break;
+        case 24: // Ctrl + X exit program
             printf("\033[2J\033[0;0H");
             return 0;
         default:
             break;
         }
         homeFace(filePath);
+        if (flagKey == MIDDLE_INSESRT_FLAG || flagKey == LAST_INSERT_FLAG)
+            printf("\033[4;0H"
+                   "\033[37;43m * \e[0;30m\033[30;46m  Insert via file  = I \033[0m."
+                   "\t\t\t\t\t \033[37;43m * \e[0;30m\033[30;46m  Insert using keyboard  = K \033[0m");
         if (flagView == VIEW_FLAG)
         {
             printf("\033[2;0H\033[37;43m * "
-                   "\033[30;46m! check verification: Ctrl + T \033[0m");
+                   "\033[30;46m! check verification: Ctrl + T \033[0m ");
         }
         if (flagKey == SAVE_BOTTON_EX_FLAG)
         {
             homeFace(filePath);
             if (genSolution == NULL)
             {
-                printf("\033[%d;0H !Error runtime or No solution ", aLineElementNumber + 6);
+                printf("\033[%d;0H\e[0;30m !Error runtime or No solution ", aLineElementNumber + 6);
                 flagKey = DEFAULT_FLAG;
             }
             else
@@ -340,6 +352,7 @@ int main()
             }
         }
     }
+    freeEnIn(enterKey, aLineElementNumber);
     if (listNumberLine != NULL)
     {
         freeStruct(&listNumberLine);
@@ -738,8 +751,12 @@ int maxArray(double Array[], int NElement)
     }
     return loc;
 }
+
 general_Solution *solve(double **matrix)
 {
+    FILE *FLog = fopen("./OUT/convergence_process.txt", "w");
+    fprintf(FLog, "%d\n", eNumber);
+    int x = 0;
     double surplus[eNumber];
     double *allX = (double *)malloc(sizeof(double) * (eNumber + 1));
     for (int i = 0; i < eNumber; i++)
@@ -748,8 +765,18 @@ general_Solution *solve(double **matrix)
         allX[i] = 0;
     }
     int maxValueLocation = maxArray(surplus, eNumber);
-    int x = 0;
-    while (fabs(surplus[maxValueLocation]) > ERROR_MARGIN)
+    if (x < 100 || x > 10000000 - 100 || fabs(surplus[maxValueLocation]) > ERROR_MARGIN * 100)
+    {
+        for (int i = 0; i < eNumber * 2; i++)
+        {
+            if (i < eNumber)
+                fprintf(FLog, "%g ", allX[i]);
+            else
+                fprintf(FLog, "%g ", surplus[i - eNumber]);
+        }
+        fprintf(FLog, "\n");
+    }
+    do
     {
         allX[maxValueLocation] += surplus[maxValueLocation];
         for (int i = 0; i < eNumber; i++)
@@ -761,7 +788,17 @@ general_Solution *solve(double **matrix)
         }
         surplus[maxValueLocation] = 0;
         maxValueLocation = maxArray(surplus, eNumber);
-
+        if (x < 100 || x > 10000000 - 100 || fabs(surplus[maxValueLocation]) > ERROR_MARGIN * 100)
+        {
+            for (int i = 0; i < eNumber * 2; i++)
+            {
+                if (i < eNumber)
+                    fprintf(FLog, "%g ", allX[i]);
+                else
+                    fprintf(FLog, "%g ", surplus[i - eNumber]);
+            }
+            fprintf(FLog, "\n");
+        }
         x++;
         if (x == 10000000)
         {
@@ -769,7 +806,9 @@ general_Solution *solve(double **matrix)
             // printf("# !Error runtime or No solution\n");
             return NULL;
         }
-    }
+        maxValueLocation = maxArray(surplus, eNumber);
+    } while (fabs(surplus[maxValueLocation]) > ERROR_MARGIN);
+    fclose(FLog);
     return allX;
 }
 void genSolutionToF(general_Solution *genSolution, FILE *f)
@@ -1036,7 +1075,7 @@ void homeFace(char fileName[])
            "\033[37;43m * "
            "\033[30;46m Open File = Ctrl + O \033[2C"
            "\033[37;43m * "
-           "\033[30;46m History = Ctrl + H  \033[2C"
+           "\033[30;46m See convergence = V  \033[2C"
            "\033[37;43m * "
            "\033[30;46m Save = Ctrl + S \033[2C"
            "\033[37;43m * "
@@ -1046,34 +1085,7 @@ void homeFace(char fileName[])
            fileName);
     printf("\033[0m");
 }
-void About()
-{
-    printf("\033[6;28H\033[37;43m"
-           "                                                     ");
-    printf("\033[7;28H\033[30;46m"
-           "                                                     ");
-    printf("\033[8;28H"
-           "        PBL1 : COMPUTATIONAL PROGRAMMING             ");
-    printf("\033[9;28H"
-           "                                                     ");
-    printf("\033[10;28H"
-           "        Topic : 305                                  ");
-    printf("\033[11;28H"
-           "                                                     ");
-    printf("\033[12;28H"
-           "        Instructor : Pham Cong Thang                 ");
-    printf("\033[13;28H"
-           "                                                     ");
-    printf("\033[14;28H"
-           "        Implemented by: Nguyen Van Loi ~ 102230026   ");
-    printf("\033[15;28H"
-           "                                                     ");
-    printf("\033[16;28H"
-           "                        Tran Anh Duc ~ 102230010     ");
-    printf("\033[17;28H"
-           "                                                     ");
-    printf("\033[0m");
-}
+
 void mallString(char **str, int size_str)
 {
     str = (char **)malloc(sizeof(char *) * size_str);
@@ -1217,7 +1229,7 @@ void ShowFaceMa(lineList *listNumberLine, int aLineElementNumber, int maxLenNu, 
 void showGenSol(general_Solution *genSolution, int aLineElementNumber)
 {
     printf("\033[%d;0H General solution  X = { %g", aLineElementNumber + 6, genSolution[0]);
-    for (int i = 0; i < aLineElementNumber; i++)
+    for (int i = 1; i < aLineElementNumber; i++)
     {
         printf(", %g", genSolution[i]);
     }
@@ -1228,7 +1240,7 @@ void verification(lineList *listNumberLine, general_Solution *genSolution, char 
     lineList *tempLine = listNumberLine;
     double sumOfMuty;
     int i = 0, j = 0;
-    printf("\033[%d;0H", i + 5);
+    printf("\e[0m\033[%d;0H", i + 5);
     while (tempLine != NULL)
     {
         numbersList *tempNum = tempLine->numbersList;
@@ -1236,7 +1248,7 @@ void verification(lineList *listNumberLine, general_Solution *genSolution, char 
         j = 0;
         while (tempNum != NULL)
         {
-            printf("\033[30;46m");
+            printf("\033[30m\e[47m");
             if (tempNum->data >= 0)
             {
                 printf(" + %g*%g", tempNum->data, genSolution[j]);
@@ -1250,11 +1262,11 @@ void verification(lineList *listNumberLine, general_Solution *genSolution, char 
             tempNum = tempNum->next;
         }
 
-        printf(" = %g", strtod(enterKey[i], NULL));
+        printf(" = %lf", strtod(enterKey[i], NULL));
         if (fabs(sumOfMuty - strtod(enterKey[i], NULL)) < ERROR_MARGIN * 100)
-            printf("\t\033[32m o \033[0m");
+            printf("     \033[30m\e[47m o \033[0m");
         else
-            printf("\t\033[34;41m x \033[0m");
+            printf("     \e[0;31m\e[47m x \033[0m");
         printf("\n");
         tempLine = tempLine->lineListNext;
         i++;
