@@ -78,13 +78,16 @@ Chương trình đã được cấu hình sẵn với Makefile. Để biên dị
 - `**.OUT` - File kết quả sau khi thêm phần tử vào danh sách liên kết.
 - `**.OUT` - File kết quả sau khi giải hệ phương trình.
 
-## 🚀 About Me
+## 🚀 About We
 
-- Mình là sinh viên của trường Bách Khoa. 
+- Chúng mình là sinh viên của trường Bách Khoa. 
 - yêu khoa học và thích thế giới công nghệ.
   
 ## Liên hệ
 
 Nếu bạn có bất kỳ câu hỏi hoặc góp ý nào, vui lòng liên hệ qua email: [loinguyenvan274@gmail.com].
+
+- [![Facebook Lợi Nguyễn]](https://www.facebook.com/duyen.mi.33483)
+- [![Facebook Trần Đức]](https://www.facebook.com/profile.php?id=100023136875087)
                                                                 
 
